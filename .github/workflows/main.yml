@@ -1,0 +1,61 @@
+name: Ubuntu with systemd in Docker
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'Dockerfile'
+      - '.github/workflows/main.yml'
+
+jobs:
+  bionic:
+    runs-on: [ubuntu-latest]
+    if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build ubuntu-systemd:bionic
+        run: |
+          docker build \
+            -f Dockerfile \
+            --build-arg=BUILDKIT_INLINE_CACHE=1 \
+            --build-arg=BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+            --build-arg=VCS_REF=${GITHUB_SHA::8} \
+            -t terradatum/ubuntu-systemd:latest \
+            -t terradatum/ubuntu-systemd:bionic \
+            -t terradatum/ubuntu-systemd:18.04 \
+            --cache-from=terradatum/ubuntu-systemd:bionic
+      - name: Push to Docker Hub
+        run: |
+          docker push terradatum/ubuntu-systemd:latest \
+          docker push terradatum/ubuntu-systemd:bionic
+          docker push terradatum/ubuntu-systemd:18.04
+  xenial:
+    runs-on: [ubuntu-latest]
+    if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Copy Dockerfiles
+        run: |
+          cp Dockerfile Xenial.dockerfile
+          sed -i'' 's/FROM.*ubuntu:bionic/FROM ubuntu:xenial/' Xenial.dockerfile
+      - name: Build ubuntu-systemd:bionic
+        run: |
+          docker build \
+            -f Xenial.dockerfile \
+            --build-arg=BUILDKIT_INLINE_CACHE=1 \
+            --build-arg=BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+            --build-arg=VCS_REF=${GITHUB_SHA::8} \
+            -t terradatum/ubuntu-systemd:xenial \
+            -t terradatum/ubuntu-systemd:16.04 \
+            --cache-from=terradatum/ubuntu-systemd:xenial
+      - name: Push to Docker Hub
+        run: |
+          docker push terradatum/ubuntu-systemd:latest \
+          docker push terradatum/ubuntu-systemd:xenial
+          docker push terradatum/ubuntu-systemd:16.04
