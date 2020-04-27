@@ -26,11 +26,11 @@ jobs:
             -t terradatum/ubuntu-systemd:latest \
             -t terradatum/ubuntu-systemd:bionic \
             -t terradatum/ubuntu-systemd:18.04 \
-            --cache-from=terradatum/ubuntu-systemd:bionic
+            --cache-from=terradatum/ubuntu-systemd:bionic \
             .
       - name: Push to Docker Hub
         run: |
-          docker push terradatum/ubuntu-systemd:latest \
+          docker push terradatum/ubuntu-systemd:latest
           docker push terradatum/ubuntu-systemd:bionic
           docker push terradatum/ubuntu-systemd:18.04
   xenial:
@@ -54,10 +54,9 @@ jobs:
             --build-arg=VCS_REF=${GITHUB_SHA::8} \
             -t terradatum/ubuntu-systemd:xenial \
             -t terradatum/ubuntu-systemd:16.04 \
-            --cache-from=terradatum/ubuntu-systemd:xenial
+            --cache-from=terradatum/ubuntu-systemd:xenial \
             .
       - name: Push to Docker Hub
         run: |
-          docker push terradatum/ubuntu-systemd:latest \
           docker push terradatum/ubuntu-systemd:xenial
           docker push terradatum/ubuntu-systemd:16.04
