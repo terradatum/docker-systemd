@@ -46,4 +46,4 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.vcs-ref=$VCS_REF
 
 STOPSIGNAL SIGRTMIN+3
-CMD ["/lib/systemd/systemd"]
+CMD ["/lib/systemd/systemd", "--system"]
