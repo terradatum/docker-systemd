@@ -46,4 +46,5 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.vcs-ref=$VCS_REF
 
 STOPSIGNAL SIGRTMIN+3
+VOLUME["/sys/fs/cgroup", "/tmp", "/run", "/run/lock"]
 CMD ["/lib/systemd/systemd", "--system"]
