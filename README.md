@@ -1,5 +1,8 @@
 # Dockerfile examples for containerized systemd (mainly for test environments)
-Strongly influenced by the work of [@AkihiroSuda][akihiro-suda]'s work found [here][containerized-systemd].
+Strongly influenced by the work of [@AkihiroSuda][akihiro-suda]'s work found [here][akihiro-suda].
+Some ideas from [@ifireball][ifireball] on how to manage Journald.
+
+_**NOTE: To get the journal in Docker Logs, this container MUST be run with `-t`.**_ 
 
 ## Demo 1: interactive shell with `systemctl`
 
@@ -108,4 +111,5 @@ zsh: exit 130   docker run -it --rm -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v     j
 * `docker run` needs `-t`
 
 [akihiro-suda]: https://github.com/AkihiroSuda
-[containerized-systemd]: https://github.com/AkihiroSuda/containerized-systemd
+[akihiro-suda]: https://github.com/AkihiroSuda/containerized-systemd
+[ifireball]: https://github.com/ifireball/systemd-base/tree/logs-and-args/etc/systemd
