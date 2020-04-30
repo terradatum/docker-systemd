@@ -1,0 +1,308 @@
+{
+  "variables": {
+    "vcs_ref": "",
+    "build_date": "",
+    "docker_username": "{{env `DOCKER_USERNAME`}}",
+    "docker_password": "{{env `DOCKER_PASSWORD`}}"
+  },
+  "builders": [
+    {
+      "name": "bionic",
+      "type": "docker",
+      "image": "local/systemd:bionic",
+      "pull": false,
+      "commit": true,
+      "volumes": {
+        "/var/run/docker.sock": "/var/run/docker.sock",
+        "/sys/fs/cgroup": "/sys/fs/cgroup:ro"
+      },
+      "run_command": [
+        "-d",
+        "-i",
+        "-t",
+        "--restart=always",
+        "--cap-add=SYS_ADMIN",
+        "--device=/dev/fuse",
+        "{{.Image}}"
+      ],
+      "changes": [
+        "LABEL maintainer=\"G. Richard Bellamy <rbellamy@terradatum.com>\" org.label-schema.schema-version=\"1.0\" org.label-schema.name=\"terradatum/systemd\" org.label-schema.description=\"Base systemd for Ubuntu.\" org.label-schema.url=\"https://github.com/terradatum/docker-systemd\" org.label-schema.vcs-url=\"https://github.com/terradatum/docker-systemd\" org.label-schema.vendor=\"Terradatum\" org.label-schema.docker.cmd=\"docker run -it terradatum/systemd:bionic /bin/bash\"",
+        "LABEL org.label-schema.build-date=\"{{user `build_date`}}\" org.label-schema.vcs-ref=\"{{user `vcs_ref`}}\"",
+        "VOLUME [\"/sys/fs/cgroup\", \"/tmp\", \"/run\", \"/run/lock\"]",
+        "ENTRYPOINT [\"/docker-entrypoint.sh\"]"
+      ]
+    },
+    {
+      "name": "xenial",
+      "type": "docker",
+      "image": "local/systemd:xenial",
+      "pull":  false,
+      "commit": true,
+      "volumes": {
+        "/var/run/docker.sock": "/var/run/docker.sock",
+        "/sys/fs/cgroup": "/sys/fs/cgroup:ro"
+      },
+      "run_command": [
+        "-d",
+        "-i",
+        "-t",
+        "--restart=always",
+        "--cap-add=SYS_ADMIN",
+        "--device=/dev/fuse",
+        "{{.Image}}"
+      ],
+      "changes": [
+        "LABEL maintainer=\"G. Richard Bellamy <rbellamy@terradatum.com>\" org.label-schema.schema-version=\"1.0\" org.label-schema.name=\"terradatum/systemd\" org.label-schema.description=\"Base systemd for Ubuntu.\" org.label-schema.url=\"https://github.com/terradatum/docker-systemd\" org.label-schema.vcs-url=\"https://github.com/terradatum/docker-systemd\" org.label-schema.vendor=\"Terradatum\" org.label-schema.docker.cmd=\"docker run -it terradatum/systemd:xenial /bin/bash\"",
+        "LABEL org.label-schema.build-date=\"{{user `build_date`}}\" org.label-schema.vcs-ref=\"{{user `vcs_ref`}}\"",
+        "VOLUME [\"/sys/fs/cgroup\", \"/tmp\", \"/run\", \"/run/lock\"]",
+        "ENTRYPOINT [\"/docker-entrypoint.sh\"]"
+      ]
+    },
+    {
+      "name": "centos8",
+      "type": "docker",
+      "image": "local/systemd:centos8",
+      "pull":  false,
+      "commit": true,
+      "volumes": {
+        "/var/run/docker.sock": "/var/run/docker.sock",
+        "/sys/fs/cgroup": "/sys/fs/cgroup:ro"
+      },
+      "run_command": [
+        "-d",
+        "-i",
+        "-t",
+        "--restart=always",
+        "--cap-add=SYS_ADMIN",
+        "--device=/dev/fuse",
+        "{{.Image}}"
+      ],
+      "changes": [
+        "LABEL maintainer=\"G. Richard Bellamy <rbellamy@terradatum.com>\" org.label-schema.schema-version=\"1.0\" org.label-schema.name=\"terradatum/systemd\" org.label-schema.description=\"Base systemd for CentOS.\" org.label-schema.url=\"https://github.com/terradatum/docker-systemd\" org.label-schema.vcs-url=\"https://github.com/terradatum/docker-systemd\" org.label-schema.vendor=\"Terradatum\" org.label-schema.docker.cmd=\"docker run -it terradatum/systemd:centos8 /bin/bash\"",
+        "LABEL org.label-schema.build-date=\"{{user `build_date`}}\" org.label-schema.vcs-ref=\"{{user `vcs_ref`}}\"",
+        "VOLUME [\"/sys/fs/cgroup\", \"/tmp\", \"/run\", \"/run/lock\"]",
+        "ENTRYPOINT [\"/docker-entrypoint.sh\"]"
+      ]
+    },
+    {
+      "name": "centos7",
+      "type": "docker",
+      "image": "local/systemd:centos7",
+      "pull":  false,
+      "commit": true,
+      "volumes": {
+        "/var/run/docker.sock": "/var/run/docker.sock",
+        "/sys/fs/cgroup": "/sys/fs/cgroup:ro"
+      },
+      "run_command": [
+        "-d",
+        "-i",
+        "-t",
+        "--restart=always",
+        "--cap-add=SYS_ADMIN",
+        "--device=/dev/fuse",
+        "{{.Image}}"
+      ],
+      "changes": [
+        "LABEL maintainer=\"G. Richard Bellamy <rbellamy@terradatum.com>\" org.label-schema.schema-version=\"1.0\" org.label-schema.name=\"terradatum/systemd\" org.label-schema.description=\"Base systemd for CentOS.\" org.label-schema.url=\"https://github.com/terradatum/docker-systemd\" org.label-schema.vcs-url=\"https://github.com/terradatum/docker-systemd\" org.label-schema.vendor=\"Terradatum\" org.label-schema.docker.cmd=\"docker run -it terradatum/systemd:centos7 /bin/bash\"",
+        "LABEL org.label-schema.build-date=\"{{user `build_date`}}\" org.label-schema.vcs-ref=\"{{user `vcs_ref`}}\"",
+        "VOLUME [\"/sys/fs/cgroup\", \"/tmp\", \"/run\", \"/run/lock\"]",
+        "ENTRYPOINT [\"/docker-entrypoint.sh\"]"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "{{template_dir}}/docker-entrypoint.sh",
+      "destination": "/"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "apt-get update",
+        "apt-get install -y systemd systemd-sysv snapd fuse squashfuse locales",
+        "apt-get clean",
+        "rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*",
+        "locale-gen en_US.UTF-8"
+      ],
+      "environment_vars": [
+        "DEBIAN_FRONTEND=noninteractive",
+        "SNAPCRAFT_SETUP_CORE=1"
+      ],
+      "execute_command": "sh -c '{{ .Vars }} {{ .Path }}'",
+      "only": [
+        "bionic",
+        "xenial"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "yum update -y",
+        "yum install -y glibc-common glibc-locale-source glibc-langpack-en",
+        "yum clean all",
+        "localedef -i en_US -f UTF-8 en_US.UTF-8"
+      ],
+      "execute_command": "sh -c '{{ .Vars }} {{ .Path }}'",
+      "only": [
+        "centos7",
+        "centos8"
+      ]
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "type": "docker-tag",
+        "repository": "terradatum/systemd",
+        "tag": "bionic",
+        "only": [
+          "bionic"
+        ]
+      },
+      {
+        "type": "docker-push",
+        "login": true,
+        "login_username": "{{user `docker_username`}}",
+        "login_password": "{{user `docker_password`}}",
+        "only": [
+          "bionic"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "docker-tag",
+        "repository": "terradatum/systemd",
+        "tag": "ubuntu-bionic",
+        "only": [
+          "bionic"
+        ]
+      },
+      {
+        "type": "docker-push",
+        "login": true,
+        "login_username": "{{user `docker_username`}}",
+        "login_password": "{{user `docker_password`}}",
+        "only": [
+          "bionic"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "docker-tag",
+        "repository": "terradatum/systemd",
+        "tag": "ubuntu-18.04",
+        "only": [
+          "bionic"
+        ]
+      },
+      {
+        "type": "docker-push",
+        "login": true,
+        "login_username": "{{user `docker_username`}}",
+        "login_password": "{{user `docker_password`}}",
+        "only": [
+          "bionic"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "docker-tag",
+        "repository": "terradatum/systemd",
+        "tag": "xenial",
+        "only": [
+          "xenial"
+        ]
+      },
+      {
+        "type": "docker-push",
+        "login": true,
+        "login_username": "{{user `docker_username`}}",
+        "login_password": "{{user `docker_password`}}",
+        "only": [
+          "xenial"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "docker-tag",
+        "repository": "terradatum/systemd",
+        "tag": "ubuntu-xenial",
+        "only": [
+          "xenial"
+        ]
+      },
+      {
+        "type": "docker-push",
+        "login": true,
+        "login_username": "{{user `docker_username`}}",
+        "login_password": "{{user `docker_password`}}",
+        "only": [
+          "xenial"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "docker-tag",
+        "repository": "terradatum/systemd",
+        "tag": "ubuntu-16.04",
+        "only": [
+          "xenial"
+        ]
+      },
+      {
+        "type": "docker-push",
+        "login": true,
+        "login_username": "{{user `docker_username`}}",
+        "login_password": "{{user `docker_password`}}",
+        "only": [
+          "xenial"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "docker-tag",
+        "repository": "terradatum/systemd",
+        "tag": "centos8",
+        "only": [
+          "centos8"
+        ]
+      },
+      {
+        "type": "docker-push",
+        "login": true,
+        "login_username": "{{user `docker_username`}}",
+        "login_password": "{{user `docker_password`}}",
+        "only": [
+          "centos8"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "docker-tag",
+        "repository": "terradatum/systemd",
+        "tag": "centos7",
+        "only": [
+          "centos7"
+        ]
+      },
+      {
+        "type": "docker-push",
+        "login": true,
+        "login_username": "{{user `docker_username`}}",
+        "login_password": "{{user `docker_password`}}",
+        "only": [
+          "centos7"
+        ]
+      }
+    ]
+  ]
+}

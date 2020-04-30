@@ -5,58 +5,44 @@ on:
       - master
     paths:
       - 'Dockerfile'
+      - 'docker-entrypoint.sh'
       - '.github/workflows/main.yml'
 
 jobs:
-  bionic:
+  systemd:
     runs-on: [ubuntu-latest]
     if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
     steps:
       - name: Checkout
         uses: actions/checkout@master
-      - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build ubuntu-systemd:bionic
+      - name: Build local/systemd - this adds STOPSIGNAL and is used as a base for packer
         run: |
           docker build \
             -f Dockerfile \
-            --build-arg=BUILDKIT_INLINE_CACHE=1 \
-            --build-arg=BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-            --build-arg=VCS_REF=${GITHUB_SHA::8} \
-            -t terradatum/ubuntu-systemd:latest \
-            -t terradatum/ubuntu-systemd:bionic \
-            -t terradatum/ubuntu-systemd:18.04 \
-            --cache-from=terradatum/ubuntu-systemd:bionic \
+            --build-arg=DOCKER_FROM="ubuntu:bionic" \
+            -t local/systemd:bionic \
             .
-      - name: Push to Docker Hub
-        run: |
-          docker push terradatum/ubuntu-systemd:latest
-          docker push terradatum/ubuntu-systemd:bionic
-          docker push terradatum/ubuntu-systemd:18.04
-  xenial:
-    runs-on: [ubuntu-latest]
-    if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@master
-      - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: Copy Dockerfiles
-        run: |
-          cp Dockerfile Xenial.dockerfile
-          sed -i'' 's/FROM.*ubuntu:bionic/FROM ubuntu:xenial/' Xenial.dockerfile
-      - name: Build ubuntu-systemd:xenial
-        run: |
           docker build \
-            -f Xenial.dockerfile \
-            --build-arg=BUILDKIT_INLINE_CACHE=1 \
-            --build-arg=BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-            --build-arg=VCS_REF=${GITHUB_SHA::8} \
-            -t terradatum/ubuntu-systemd:xenial \
-            -t terradatum/ubuntu-systemd:16.04 \
-            --cache-from=terradatum/ubuntu-systemd:xenial \
+            -f Dockerfile \
+            --build-arg=DOCKER_FROM="ubuntu:xenial" \
+            -t local/systemd:xenial \
             .
-      - name: Push to Docker Hub
+          docker build \
+            -f Dockerfile \
+            --build-arg=DOCKER_FROM="centos:centos8" \
+            -t local/systemd:centos8 \
+            .
+          docker build \
+            -f Dockerfile \
+            --build-arg=DOCKER_FROM="centos:centos7" \
+            -t local/systemd:centos7 \
+            .
+      - name: Build and push systemd with packer
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          docker push terradatum/ubuntu-systemd:xenial
-          docker push terradatum/ubuntu-systemd:16.04
+          packer build \
+            --var=BUILD_DATE="$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --var=VCS_REF="$(git rev-parse --verify HEAD | cut -c1-8)" \
+            systemd.json
