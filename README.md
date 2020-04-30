@@ -4,6 +4,14 @@ Some ideas from [@ifireball][ifireball] on how to manage Journald.
 
 _**NOTE: To get the journal in Docker Logs, this container MUST be run with `-t`.**_ 
 
+* Ubuntu
+  * Xenial (16.04 - systemd 229)
+  * Bionic (18.04 - systemd 237)
+  * Focal (20.04 - systemd 245)
+* Centos
+   * 7 (systemd 219)
+   * 8 (systemd 239)
+
 ## Demo 1: interactive shell with `systemctl`
 
 * The command (`/bin/bash`) specified as the argument of `docker run` is executed as the foreground job in the container.
