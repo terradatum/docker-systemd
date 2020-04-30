@@ -6,6 +6,7 @@ container=docker
 export container
 
 systemctl set-default multi-user.target
+systemctl mask systemd-firstboot.service systemd-udevd.service
 systemctl unmask systemd-logind
 
 if [ $# -ne 0 ]; then
@@ -15,7 +16,7 @@ if [ $# -ne 0 ]; then
   cat >/etc/systemd/system/docker-entrypoint.target <<EOF
 [Unit]
 Description=the target for docker-entrypoint.service
-Requires=docker-entrypoint.service systemd-logind.service systemd-user-sessions.service systemd-journald.service dbus.service systemd-resolved.service systemd-networkd.service
+Requires=docker-entrypoint.service systemd-logind.service systemd-user-sessions.service
 EOF
 
   quoted_args="$(printf " %q" "${@}")"
@@ -40,6 +41,7 @@ StandardInput=$standard_input
 StandardOutput=inherit
 StandardError=inherit
 WorkingDirectory=$(pwd)
+EnvironmentFile=/etc/environment
 EnvironmentFile=/etc/docker-entrypoint-env
 
 [Install]
