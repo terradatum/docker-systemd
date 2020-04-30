@@ -21,9 +21,14 @@ jobs:
         run: |
           docker build \
             -f Dockerfile \
-            --build-arg=DOCKER_FROM="ubuntu:bionic" \
-            -t local/systemd:bionic \
+            --build-arg=DOCKER_FROM="ubuntu:focal" \
+            -t local/systemd:focal \
             .
+          docker build \
+           -f Dockerfile \
+           --build-arg=DOCKER_FROM="ubuntu:bionic" \
+           -t local/systemd:bionic \
+           .
           docker build \
             -f Dockerfile \
             --build-arg=DOCKER_FROM="ubuntu:xenial" \

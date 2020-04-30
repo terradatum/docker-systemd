@@ -7,6 +7,32 @@
   },
   "builders": [
     {
+      "name": "focal",
+      "type": "docker",
+      "image": "local/systemd:focal",
+      "pull": false,
+      "commit": true,
+      "volumes": {
+        "/var/run/docker.sock": "/var/run/docker.sock",
+        "/sys/fs/cgroup": "/sys/fs/cgroup:ro"
+      },
+      "run_command": [
+        "-d",
+        "-i",
+        "-t",
+        "--restart=always",
+        "--cap-add=SYS_ADMIN",
+        "--device=/dev/fuse",
+        "{{.Image}}"
+      ],
+      "changes": [
+        "LABEL maintainer=\"G. Richard Bellamy <rbellamy@terradatum.com>\" org.label-schema.schema-version=\"1.0\" org.label-schema.name=\"terradatum/systemd\" org.label-schema.description=\"Base systemd for Ubuntu.\" org.label-schema.url=\"https://github.com/terradatum/docker-systemd\" org.label-schema.vcs-url=\"https://github.com/terradatum/docker-systemd\" org.label-schema.vendor=\"Terradatum\" org.label-schema.docker.cmd=\"docker run -it terradatum/systemd:bionic /bin/bash\"",
+        "LABEL org.label-schema.build-date=\"{{user `build_date`}}\" org.label-schema.vcs-ref=\"{{user `vcs_ref`}}\"",
+        "VOLUME [\"/sys/fs/cgroup\", \"/tmp\", \"/run\", \"/run/lock\"]",
+        "ENTRYPOINT [\"/docker-entrypoint.sh\"]"
+      ]
+    },
+    {
       "name": "bionic",
       "type": "docker",
       "image": "local/systemd:bionic",
@@ -36,7 +62,7 @@
       "name": "xenial",
       "type": "docker",
       "image": "local/systemd:xenial",
-      "pull":  false,
+      "pull": false,
       "commit": true,
       "volumes": {
         "/var/run/docker.sock": "/var/run/docker.sock",
@@ -62,7 +88,7 @@
       "name": "centos8",
       "type": "docker",
       "image": "local/systemd:centos8",
-      "pull":  false,
+      "pull": false,
       "commit": true,
       "volumes": {
         "/var/run/docker.sock": "/var/run/docker.sock",
@@ -88,7 +114,7 @@
       "name": "centos7",
       "type": "docker",
       "image": "local/systemd:centos7",
-      "pull":  false,
+      "pull": false,
       "commit": true,
       "volumes": {
         "/var/run/docker.sock": "/var/run/docker.sock",
@@ -132,6 +158,7 @@
       ],
       "execute_command": "sh -c '{{ .Vars }} {{ .Path }}'",
       "only": [
+        "focal",
         "bionic",
         "xenial"
       ]
@@ -157,6 +184,63 @@
     }
   ],
   "post-processors": [
+    [
+      {
+        "type": "docker-tag",
+        "repository": "terradatum/systemd",
+        "tag": "focal",
+        "only": [
+          "focal"
+        ]
+      },
+      {
+        "type": "docker-push",
+        "login": true,
+        "login_username": "{{user `docker_username`}}",
+        "login_password": "{{user `docker_password`}}",
+        "only": [
+          "focal"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "docker-tag",
+        "repository": "terradatum/systemd",
+        "tag": "ubuntu-focal",
+        "only": [
+          "focal"
+        ]
+      },
+      {
+        "type": "docker-push",
+        "login": true,
+        "login_username": "{{user `docker_username`}}",
+        "login_password": "{{user `docker_password`}}",
+        "only": [
+          "focal"
+        ]
+      }
+    ],
+    [
+      {
+        "type": "docker-tag",
+        "repository": "terradatum/systemd",
+        "tag": "ubuntu-20.04",
+        "only": [
+          "focal"
+        ]
+      },
+      {
+        "type": "docker-push",
+        "login": true,
+        "login_username": "{{user `docker_username`}}",
+        "login_password": "{{user `docker_password`}}",
+        "only": [
+          "focal"
+        ]
+      }
+    ],
     [
       {
         "type": "docker-tag",
