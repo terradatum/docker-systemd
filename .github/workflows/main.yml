@@ -6,6 +6,7 @@ on:
     paths:
       - 'Dockerfile'
       - 'docker-entrypoint.sh'
+      - '/etc/systemd/journald.conf'
       - '.github/workflows/main.yml'
 
 jobs:
