@@ -7,6 +7,7 @@ on:
       - 'Dockerfile'
       - 'docker-entrypoint.sh'
       - '/etc/systemd/journald.conf'
+      - 'systemd.json'
       - '.github/workflows/main.yml'
 
 jobs:
