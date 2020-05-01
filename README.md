@@ -7,10 +7,10 @@ _**NOTE: To get the journal in Docker Logs, this container MUST be run with `-t`
 * Ubuntu
   * Xenial (16.04 - systemd 229)
     - Bug: `systemd-journald.service: Failed to add fd to store: Operation not permitted`. Doesn't prevent the container 
-    from operating normally.
+      from operating normally.
   * Bionic (18.04 - systemd 237)
     - Bug: `systemd-journald.service: Failed to add fd to store: Operation not permitted`. Doesn't prevent the container 
-    from operating normally.
+      from operating normally.
   * Focal (20.04 - systemd 245)
 * Centos
    * 7 (systemd 219)

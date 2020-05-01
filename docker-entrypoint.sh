@@ -6,7 +6,7 @@ container=docker
 export container
 
 systemctl set-default multi-user.target
-systemctl mask systemd-firstboot.service systemd-udevd.service
+systemctl mask systemd-firstboot.service
 systemctl unmask systemd-logind
 
 if [ $# -ne 0 ]; then
