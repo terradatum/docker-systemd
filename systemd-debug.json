@@ -180,8 +180,8 @@
     },
     {
       "type": "file",
-      "source": "{{template_dir}}/etc/systemd/journald.conf",
-      "destination": "/etc/systemd/journald.conf"
+      "source": "{{template_dir}}/etc/",
+      "destination": "/etc"
     }
   ],
   "post-processors": [

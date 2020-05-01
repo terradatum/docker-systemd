@@ -54,7 +54,7 @@ EOF
 
 else
 
-  systemd_args="--system"
+  systemd_args="--show-status=false"
 
 fi
 
