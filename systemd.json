@@ -177,11 +177,6 @@
         "centos7",
         "centos8"
       ]
-    },
-    {
-      "type": "file",
-      "source": "{{template_dir}}/etc/systemd/journald.conf",
-      "destination": "/etc/systemd/journald.conf"
     }
   ],
   "post-processors": [

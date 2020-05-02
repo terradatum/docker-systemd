@@ -54,6 +54,14 @@ EOF
 
 else
 
+  {
+    echo '[Journal]'
+    echo 'Storage=volatile'
+    echo 'ForwardToConsole=yes'
+    echo 'TTYPath=/dev/console'
+    echo 'MaxLevelConsole=debug'
+  } >/etc/systemd/system/journald.conf
+
   systemd_args="--show-status=false"
 
 fi

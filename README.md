@@ -2,15 +2,11 @@
 Strongly influenced by the work of [@AkihiroSuda][akihiro-suda]'s work found [here][akihiro-suda].
 Some ideas from [@ifireball][ifireball] on how to manage Journald.
 
-_**NOTE: To get the journal in Docker Logs, this container MUST be run with `-t`.**_ 
+_**NOTE: To get the journal in Docker Logs, this container MUST be run with `-t`.**_
 
 * Ubuntu
   * Xenial (16.04 - systemd 229)
-    - Bug: `systemd-journald.service: Failed to add fd to store: Operation not permitted`. Doesn't prevent the container 
-      from operating normally.
   * Bionic (18.04 - systemd 237)
-    - Bug: `systemd-journald.service: Failed to add fd to store: Operation not permitted`. Doesn't prevent the container 
-      from operating normally.
   * Focal (20.04 - systemd 245)
 * Centos
    * 7 (systemd 219)
@@ -121,6 +117,9 @@ zsh: exit 130   docker run -it --rm -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v     j
 
 ## Bugs
 * `docker run` needs `-t`
+* `docker restart` or in-container `reboot` fails on startup with `Failed to connect to bus: Connection refused`
+* systemd 229 and 237: repeated `systemd-journald.service: Failed to add fd to store: Operation not permitted`. Doesn't prevent the container from 
+operating normally.
 
 [akihiro-suda]: https://github.com/AkihiroSuda
 [akihiro-suda]: https://github.com/AkihiroSuda/containerized-systemd
