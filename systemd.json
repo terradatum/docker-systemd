@@ -151,7 +151,8 @@
         "printf \"#!/bin/sh\\nexit 0\" > /usr/sbin/policy-rc.d",
         "apt-get clean",
         "rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*",
-        "locale-gen en_US.UTF-8"
+        "locale-gen en_US.UTF-8",
+        "export LANG=en_US.UTF-8 | tee -a /etc/environment"
       ],
       "environment_vars": [
         "DEBIAN_FRONTEND=noninteractive",
@@ -170,7 +171,8 @@
         "yum update -y",
         "yum install -y glibc-common glibc-locale-source glibc-langpack-en",
         "yum clean all",
-        "localedef -i en_US -f UTF-8 en_US.UTF-8"
+        "localedef -i en_US -f UTF-8 en_US.UTF-8",
+        "export LANG=en_US.UTF-8 | tee -a /etc/environment"
       ],
       "execute_command": "sh -c '{{ .Vars }} {{ .Path }}'",
       "only": [
