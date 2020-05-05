@@ -9,6 +9,12 @@ systemctl set-default multi-user.target
 systemctl mask systemd-firstboot.service
 systemctl unmask systemd-logind
 
+if [[ ! -t 0 ]]; then
+  # shellcheck disable=SC2016
+  echo >&2 'ERROR: TTY needs to be enabled (`docker run -t ...`).'
+  exit 1
+fi
+
 if [ $# -ne 0 ]; then
 
   env >/etc/docker-entrypoint-env
@@ -22,13 +28,6 @@ EOF
   quoted_args="$(printf " %q" "${@}")"
   echo "${quoted_args}" >/etc/docker-entrypoint-cmd
 
-  standard_input=
-  if [[ ! -t 0 ]]; then
-    standard_input=null
-  else
-    standard_input="tty-force"
-  fi
-
   cat >/etc/systemd/system/docker-entrypoint.service <<EOF
 [Unit]
 Description=docker-entrypoint.service
@@ -37,7 +36,7 @@ Description=docker-entrypoint.service
 ExecStart=/bin/bash -exc "source /etc/docker-entrypoint-cmd"
 # EXIT_STATUS is either an exit code integer or a signal name string, see systemd.exec(5)
 ExecStopPost=/bin/bash -ec "if echo \${EXIT_STATUS} | grep [A-Z] > /dev/null; then echo >&2 \"got signal \${EXIT_STATUS}\"; systemctl exit \$(( 128 + \$( kill -l \${EXIT_STATUS} ) )); else systemctl exit \${EXIT_STATUS}; fi"
-StandardInput=$standard_input
+StandardInput=tty-force
 StandardOutput=inherit
 StandardError=inherit
 WorkingDirectory=$(pwd)
