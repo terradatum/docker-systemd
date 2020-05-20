@@ -9,12 +9,6 @@ systemctl set-default multi-user.target
 systemctl mask systemd-firstboot.service
 systemctl unmask systemd-logind
 
-if [[ ! -t 0 ]]; then
-  # shellcheck disable=SC2016
-  echo >&2 'ERROR: TTY needs to be enabled (`docker run -t ...`).'
-  exit 1
-fi
-
 if [ $# -ne 0 ]; then
 
   env >/etc/docker-entrypoint-env
@@ -75,6 +69,10 @@ elif [ -x /sbin/init ]; then
 else
   echo >&2 'ERROR: systemd is not installed'
   exit 1
+fi
+
+if ! [ -e /dev/console ] ; then
+    socat -u pty,link=/dev/console stdout &
 fi
 
 echo "$0: starting $systemd $systemd_args"
