@@ -20,7 +20,7 @@ _**NOTE: To get the journal in Docker Logs, this container MUST be run with `-t`
 * The container shuts down when the command exits. The exit status code (`42`) is propagated.
 
 ```console
-% packer build --timestamp-ui -var build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') -var vcs_ref=$(git rev-parse --verify HEAD | cut -c1-8) -var docker_username="terradatum8automation" -var docker_password="G6#h592m8HWYBvXam0" systemd.json
+% packer build --timestamp-ui -var build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') -var vcs_ref=$(git rev-parse --verify HEAD | cut -c1-8) -var docker_username="terradatum8automation" -var docker_password="SOMEPASSWORDHERE" systemd.json
 % docker run -it --rm -v /sys/fs/cgroup:/sys/fs/cgroup:ro -v /var/run/docker.sock:/var/run/docker.sock --cap-add=SYS_ADMIN --device=/dev/fuse --workdir /usr -e FOO=hello terradatum/systemd:bionic /bin/bash
 Created symlink /etc/systemd/system/default.target → /lib/systemd/system/multi-user.target.
 Created symlink /etc/systemd/system/multi-user.target.wants/docker-entrypoint.service → /etc/systemd/system/docker-entrypoint.service.
